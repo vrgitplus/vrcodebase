@@ -1,0 +1,102 @@
+---
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"httpd:2.4","namespace":"openshift"},"fieldPath":"spec.template.spec.containers[?(@.name==\"httpd\")].image"}]'
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: httpd
+      app.kubernetes.io/component: httpd
+      app.kubernetes.io/instance: httpd
+    name: httpd
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        deployment: httpd
+    strategy: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          deployment: httpd
+      spec:
+        containers:
+        - image: ' '
+          name: httpd
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          resources: {}
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: httpd
+      app.kubernetes.io/component: httpd
+      app.kubernetes.io/instance: httpd
+    name: httpd
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    selector:
+      deployment: httpd
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: "2022-05-29T06:05:13Z"
+  labels:
+    app: httpd
+    app.kubernetes.io/component: httpd
+    app.kubernetes.io/instance: httpd
+  name: httpd
+  namespace: default
+  resourceVersion: "1506707"
+  uid: 133f268f-5495-424e-8cc1-1c5847734a79
+spec:
+  host: httpd-default.apps-crc.testing
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: httpd
+    weight: 100
+  selector:
+    deployment: httpd
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: "2022-05-29T06:05:13Z"
+      status: "True"
+      type: Admitted
+    host: httpd-default.apps-crc.testing
+    routerCanonicalHostname: router-default.apps-crc.testing
+    routerName: default
+    wildcardPolicy: None

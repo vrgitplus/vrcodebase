@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ngnix
+  name: ngnix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngnix
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ngnix
+    spec:
+      containers:
+      - image: docker.io/library/nginx # oc port-forward <pod> 8080:80
+        name: ngnix

@@ -1,0 +1,5 @@
+oc new-app httpd --dry-run httpd:2.4 -o yaml > httpd.yaml
+oc apply -f httpd.yaml
+oc expose svc/httpd 
+or
+oc port-forward pod/httpd-8c6f588c9-xjvzk 8090:8080
